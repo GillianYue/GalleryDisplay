@@ -14,9 +14,12 @@ public class ScrollControl : MonoBehaviour
     float lerpDuration;
     Vector3 startLerpPos, endLerpPos;
 
+    public int currViewArt;
+    public PanZoom panZoom;
+
     void Start()
     {
-        
+        LerpToIndex(0);
     }
 
     void Update()
@@ -31,12 +34,14 @@ public class ScrollControl : MonoBehaviour
         }
     }
 
-    public void SnapToIndex(int i)
+    public void LerpToIndex(int i)
     {
-        SnapTo(scrollRect, rectTransforms[i]);
+        currViewArt = i;
+        LerpTo(scrollRect, rectTransforms[i]);
+        panZoom.setMoveAroundGO(rectTransforms[i].GetChild(0).gameObject); //pan the actual image object
     }
 
-    public void SnapTo(ScrollRect scroller, RectTransform child)
+    public void LerpTo(ScrollRect scroller, RectTransform child)
     {
         Canvas.ForceUpdateCanvases();
 

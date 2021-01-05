@@ -6,29 +6,35 @@ public class PanZoom : MonoBehaviour
 {
     Vector3 touchStart;
     public GameObject moveAroundGO; //pos will change as mouse drag
+    Vector3 moveGOStartCenter;
     Vector3 moveGOstartPos;
 
-    public float zoomOutMin = 1, zoomOutMax = 3;
+    public float zoomOutMin = 1, zoomOutMax = 2;
     Vector2 extents = new Vector2(9999, 9999); //extents to which the moveAroundGO can move, details see notes in Map
 
-    public delegate Vector2 RecalcExtents();
-    public RecalcExtents recalcExtents;
-
-    public bool checkForPanZoom;
+    public bool checkForPan, checkForZoom;
 
     bool lerpMoving; //whether is in motion of zooming to target scale, will ignore input when true
     Vector3 panDest;
     float zoomDest;
 
+    public RectTransform container;
+
     void Start()
     {
-        
+
+
+
+
     }
 
-    public void setExtentsCallback(RecalcExtents recalcE)
+    public Vector2 recalcExtents()
     {
-        recalcExtents = recalcE;
-        recalcExtents();
+        Vector3 scl = moveAroundGO.transform.localScale;
+        float xExt = (scl.x) * moveAroundGO.GetComponent<RectTransform>().rect.width/2 - container.GetComponent<RectTransform>().rect.width/2,
+        yExt =  (scl.y) * moveAroundGO.GetComponent<RectTransform>().rect.height/2 - container.GetComponent<RectTransform>().rect.height/2;
+        extents = new Vector2(xExt, yExt);
+        return extents;
     }
 
     void Update()
@@ -41,28 +47,34 @@ public class PanZoom : MonoBehaviour
 
             if (checkForDestReach()) lerpMoving = false;
         }
-        else if (checkForPanZoom) //when lerp, don't check for input control
+        else if (checkForPan) //when lerp, don't check for input control
         {
             if (Input.GetMouseButtonDown(0))
             {
                 moveGOstartPos = moveAroundGO.transform.localPosition;
-                touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                touchStart = Input.mousePosition;
             }
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0)) //TODO take into account center
             {
-                Vector3 direction = touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 direction = touchStart - Input.mousePosition;
                 Vector3 dest = moveGOstartPos - direction;
-                if (Mathf.Abs(dest.x) <= extents.x && Mathf.Abs(dest.y) <= extents.y)
+                if (dest.x >= moveGOStartCenter.x - extents.x &&
+                    dest.x <= moveGOStartCenter.x + extents.x &&
+                    dest.y >= moveGOStartCenter.y - extents.y &&
+                    dest.y <= moveGOStartCenter.y + extents.y)
                 {
+
                     moveAroundGO.transform.localPosition = dest;
                 }
-                else if (Mathf.Abs(dest.x) <= extents.x)
+                else if (dest.x >= moveGOStartCenter.x - extents.x &&
+                    dest.x <= moveGOStartCenter.x + extents.x)
                 {
                     Vector3 curr = moveAroundGO.transform.localPosition;
                     moveAroundGO.transform.localPosition = new Vector3(dest.x, curr.y, curr.z);
                 }
-                else if (Mathf.Abs(dest.y) <= extents.y)
+                else if (dest.y >= moveGOStartCenter.y - extents.y &&
+                    dest.y <= moveGOStartCenter.y + extents.y)
                 {
                     Vector3 curr = moveAroundGO.transform.localPosition;
                     moveAroundGO.transform.localPosition = new Vector3(curr.x, dest.y, curr.z);
@@ -74,6 +86,9 @@ public class PanZoom : MonoBehaviour
             {
                 moveGOstartPos = moveAroundGO.transform.localPosition;
             }
+        }
+
+        if (checkForZoom) { 
 
             if (Input.touchCount == 2) //TODO need test on ios
             {
@@ -97,26 +112,48 @@ public class PanZoom : MonoBehaviour
         }
     }
 
+    public void setMoveAroundGO(GameObject go)
+    {
+        moveGOStartCenter = go.transform.localPosition;
+        moveAroundGO = go;
+        recalcExtents();
+    }
 
     void zoom(float increment)
     {
         float scl = moveAroundGO.transform.localScale.x;
-        float newScl = Mathf.Clamp(scl+increment, 
-            zoomOutMin, zoomOutMax);
+        float newScl = Mathf.Clamp(scl+increment, zoomOutMin, zoomOutMax);
         moveAroundGO.transform.localScale = new Vector3(newScl, newScl, 1);
 
         //scale change will result in different extents (boundaries of the map), so recalculate
-        if (recalcExtents != null) extents = recalcExtents(); 
+        extents = recalcExtents();
 
-        //after scaling, we could be out of boundary, need to check and nudge back
-        Vector3 curr = moveAroundGO.transform.localPosition;
-        if (curr.x < -extents.x) curr.x = -extents.x;
-        else if (curr.x > extents.x) curr.x = extents.x;
+        if (increment != 0)
+        {
+            //after scaling, we could be out of boundary, need to check and nudge back
+            Vector3 curr = moveAroundGO.transform.localPosition;
 
-        if (curr.y < -extents.y) curr.y = -extents.y;
-        else if (curr.y > extents.y) curr.y = extents.y;
+            if (curr.x < moveGOStartCenter.x - extents.x) curr.x = moveGOStartCenter.x - extents.x;
+            else if (curr.x > moveGOStartCenter.x + extents.x) curr.x = moveGOStartCenter.x + extents.x;
 
-        moveAroundGO.transform.localPosition = curr;
+            if (curr.y < moveGOStartCenter.y - extents.y) curr.y = moveGOStartCenter.y - extents.y;
+            else if (curr.y > moveGOStartCenter.y + extents.y) curr.y = moveGOStartCenter.y + extents.y;
+
+            moveAroundGO.transform.localPosition = curr;
+
+            print("before: " + curr + " after: " + moveAroundGO.transform.localPosition+" extents: "+extents);
+        }
+
+
+        if(newScl > zoomOutMin)
+        {
+            //disable between art
+            checkForPan = true;
+        }
+        else
+        {
+            checkForPan = false;
+        }
     }
 
     public void smoothLerpTo(Vector3 dest)
