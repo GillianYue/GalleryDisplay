@@ -17,6 +17,11 @@ public class ScrollControl : MonoBehaviour
     public int currViewArt;
     public PanZoom panZoom;
 
+    private void Awake()
+    {
+        SwipeDetector.OnSwipe += SwipeDetector_OnSwipe;
+    }
+
     void Start()
     {
         LerpToIndex(0);
@@ -61,5 +66,19 @@ public class ScrollControl : MonoBehaviour
         timeElapsed = 0;
     }
 
-    
+    private void SwipeDetector_OnSwipe(SwipeData data)
+    {
+        if (panZoom.isNotScaled())
+        {
+            switch (data.Direction)
+            {
+                case SwipeDirection.Right:
+                    if (currViewArt > 0) LerpToIndex(currViewArt - 1);
+                    break;
+                case SwipeDirection.Left:
+                    if (currViewArt < rectTransforms.Length - 1) LerpToIndex(currViewArt + 1);
+                    break;
+            }
+        }
+    }
 }

@@ -19,6 +19,8 @@ public class PanZoom : MonoBehaviour
     float zoomDest;
 
     public RectTransform container;
+    public Canvas mainCanvas; //plane distance will be set to toggle distance to sound sources
+    public float planeDistMin, planeDistMax;
 
     void Start()
     {
@@ -140,8 +142,6 @@ public class PanZoom : MonoBehaviour
             else if (curr.y > moveGOStartCenter.y + extents.y) curr.y = moveGOStartCenter.y + extents.y;
 
             moveAroundGO.transform.localPosition = curr;
-
-            print("before: " + curr + " after: " + moveAroundGO.transform.localPosition+" extents: "+extents);
         }
 
 
@@ -154,6 +154,14 @@ public class PanZoom : MonoBehaviour
         {
             checkForPan = false;
         }
+
+        mainCanvas.planeDistance = Mathf.Lerp(planeDistMax, planeDistMin, (float)(newScl / zoomOutMax));
+        Debug.Log(Mathf.Lerp(planeDistMax, planeDistMin, (float)(newScl / zoomOutMax)));
+    }
+
+    public bool isNotScaled()
+    {
+        return moveAroundGO.transform.localScale.x == 1;
     }
 
     public void smoothLerpTo(Vector3 dest)
