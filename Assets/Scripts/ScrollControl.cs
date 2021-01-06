@@ -19,7 +19,7 @@ public class ScrollControl : MonoBehaviour
 
     private void Awake()
     {
-        SwipeDetector.OnSwipe += SwipeDetector_OnSwipe;
+        //SwipeDetector.OnSwipe += SwipeDetector_OnSwipe;
     }
 
     void Start()
@@ -39,13 +39,15 @@ public class ScrollControl : MonoBehaviour
         }
     }
 
+    //assumes the arts have the same dimensions
     public void LerpToIndex(int i)
     {
         currViewArt = i;
-        LerpTo(scrollRect, rectTransforms[i]);
-        panZoom.setMoveAroundGO(rectTransforms[i].GetChild(0).gameObject); //pan the actual image object
+        //LerpTo(scrollRect, rectTransforms[i]);
+        //panZoom.setMoveAroundGO(rectTransforms[i].gameObject); 
     }
 
+    //use when moveAroundGO is the RectTransform children
     public void LerpTo(ScrollRect scroller, RectTransform child)
     {
         Canvas.ForceUpdateCanvases();
@@ -62,6 +64,16 @@ public class ScrollControl : MonoBehaviour
         //start lerp movement
         startLerpPos = scrollRect.content.anchoredPosition;
         endLerpPos = endPos;
+        lerpDuration = scrollToTime;
+        timeElapsed = 0;
+    }
+
+    //use when moveAroundGO is the greater scroll
+    public void LerpTo(ScrollRect scroller, int index)
+    {
+        //start lerp movement
+        startLerpPos = scroller.content.anchoredPosition;
+        endLerpPos = new Vector2(0 - index * rectTransforms[0].rect.width, startLerpPos.y);
         lerpDuration = scrollToTime;
         timeElapsed = 0;
     }

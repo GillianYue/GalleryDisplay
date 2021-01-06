@@ -25,17 +25,17 @@ public class PanZoom : MonoBehaviour
     void Start()
     {
 
-
-
+        recalcExtents();
 
     }
 
     public Vector2 recalcExtents()
     {
-        Vector3 scl = moveAroundGO.transform.localScale;
+        Vector3 scl = moveAroundGO.GetComponent<RectTransform>().localScale;
         float xExt = (scl.x) * moveAroundGO.GetComponent<RectTransform>().rect.width/2 - container.GetComponent<RectTransform>().rect.width/2,
         yExt =  (scl.y) * moveAroundGO.GetComponent<RectTransform>().rect.height/2 - container.GetComponent<RectTransform>().rect.height/2;
         extents = new Vector2(xExt, yExt);
+        print("extents: " + extents);
         return extents;
     }
 
@@ -43,9 +43,9 @@ public class PanZoom : MonoBehaviour
     {
         if (lerpMoving)
         {
-            moveAroundGO.transform.localPosition = moveAroundGO.transform.localPosition + 0.001f * panDest;
-            float scl = moveAroundGO.transform.localScale.x, newScl = scl + zoomDest * 0.001f;
-            moveAroundGO.transform.localScale = new Vector3(newScl, newScl, 1);
+            moveAroundGO.GetComponent<RectTransform>().localPosition = moveAroundGO.GetComponent<RectTransform>().localPosition + 0.001f * panDest;
+            float scl = moveAroundGO.GetComponent<RectTransform>().localScale.x, newScl = scl + zoomDest * 0.001f;
+            moveAroundGO.GetComponent<RectTransform>().localScale = new Vector3(newScl, newScl, 1);
 
             if (checkForDestReach()) lerpMoving = false;
         }
@@ -53,11 +53,11 @@ public class PanZoom : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                moveGOstartPos = moveAroundGO.transform.localPosition;
+                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().localPosition;
                 touchStart = Input.mousePosition;
             }
 
-            if (Input.GetMouseButton(0)) //TODO take into account center
+            if (Input.GetMouseButton(0)) 
             {
                 Vector3 direction = touchStart - Input.mousePosition;
                 Vector3 dest = moveGOstartPos - direction;
@@ -66,27 +66,27 @@ public class PanZoom : MonoBehaviour
                     dest.y >= moveGOStartCenter.y - extents.y &&
                     dest.y <= moveGOStartCenter.y + extents.y)
                 {
-
-                    moveAroundGO.transform.localPosition = dest;
+                    //print("proper panning" + dest);
+                    moveAroundGO.GetComponent<RectTransform>().localPosition = dest;
                 }
-                else if (dest.x >= moveGOStartCenter.x - extents.x &&
-                    dest.x <= moveGOStartCenter.x + extents.x)
+                else if (dest.x >= moveGOStartCenter.x - extents.x && dest.x <= moveGOStartCenter.x + extents.x)
                 {
-                    Vector3 curr = moveAroundGO.transform.localPosition;
-                    moveAroundGO.transform.localPosition = new Vector3(dest.x, curr.y, curr.z);
+                    //print("only moving x" + dest);
+                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
+                    moveAroundGO.GetComponent<RectTransform>().localPosition = new Vector3(dest.x, curr.y, curr.z);
                 }
-                else if (dest.y >= moveGOStartCenter.y - extents.y &&
-                    dest.y <= moveGOStartCenter.y + extents.y)
+                else if (dest.y >= moveGOStartCenter.y - extents.y && dest.y <= moveGOStartCenter.y + extents.y)
                 {
-                    Vector3 curr = moveAroundGO.transform.localPosition;
-                    moveAroundGO.transform.localPosition = new Vector3(curr.x, dest.y, curr.z);
+                    //print("only moving y" + dest);
+                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
+                    moveAroundGO.GetComponent<RectTransform>().localPosition = new Vector3(curr.x, dest.y, curr.z);
                 }
 
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                moveGOstartPos = moveAroundGO.transform.localPosition;
+                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().localPosition;
             }
         }
 
@@ -116,16 +116,16 @@ public class PanZoom : MonoBehaviour
 
     public void setMoveAroundGO(GameObject go)
     {
-        moveGOStartCenter = go.transform.localPosition;
+        moveGOStartCenter = go.GetComponent<RectTransform>().localPosition;
         moveAroundGO = go;
         recalcExtents();
     }
 
     void zoom(float increment)
     {
-        float scl = moveAroundGO.transform.localScale.x;
+        float scl = moveAroundGO.GetComponent<RectTransform>().localScale.x;
         float newScl = Mathf.Clamp(scl+increment, zoomOutMin, zoomOutMax);
-        moveAroundGO.transform.localScale = new Vector3(newScl, newScl, 1);
+        moveAroundGO.GetComponent<RectTransform>().localScale = new Vector3(newScl, newScl, 1);
 
         //scale change will result in different extents (boundaries of the map), so recalculate
         extents = recalcExtents();
@@ -133,7 +133,7 @@ public class PanZoom : MonoBehaviour
         if (increment != 0)
         {
             //after scaling, we could be out of boundary, need to check and nudge back
-            Vector3 curr = moveAroundGO.transform.localPosition;
+            Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
 
             if (curr.x < moveGOStartCenter.x - extents.x) curr.x = moveGOStartCenter.x - extents.x;
             else if (curr.x > moveGOStartCenter.x + extents.x) curr.x = moveGOStartCenter.x + extents.x;
@@ -141,10 +141,10 @@ public class PanZoom : MonoBehaviour
             if (curr.y < moveGOStartCenter.y - extents.y) curr.y = moveGOStartCenter.y - extents.y;
             else if (curr.y > moveGOStartCenter.y + extents.y) curr.y = moveGOStartCenter.y + extents.y;
 
-            moveAroundGO.transform.localPosition = curr;
+            moveAroundGO.GetComponent<RectTransform>().localPosition = curr;
         }
 
-
+        /*
         if(newScl > zoomOutMin)
         {
             //disable between art
@@ -154,14 +154,15 @@ public class PanZoom : MonoBehaviour
         {
             checkForPan = false;
         }
+        */
 
         mainCanvas.planeDistance = Mathf.Lerp(planeDistMax, planeDistMin, (float)(newScl / zoomOutMax));
-        Debug.Log(Mathf.Lerp(planeDistMax, planeDistMin, (float)(newScl / zoomOutMax)));
+       // Debug.Log(Mathf.Lerp(planeDistMax, planeDistMin, (float)(newScl / zoomOutMax)));
     }
 
     public bool isNotScaled()
     {
-        return moveAroundGO.transform.localScale.x == 1;
+        return moveAroundGO.GetComponent<RectTransform>().localScale.x == 1;
     }
 
     public void smoothLerpTo(Vector3 dest)
