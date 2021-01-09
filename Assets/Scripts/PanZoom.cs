@@ -6,7 +6,7 @@ public class PanZoom : MonoBehaviour
 {
     Vector3 touchStart;
     public GameObject moveAroundGO; //pos will change as mouse drag
-    Vector3 moveGOStartCenter;
+    Vector3 moveGOStartCenter, extentsOffset;
     Vector3 moveGOstartPos;
 
     public float zoomOutMin = 1, zoomOutMax = 2;
@@ -35,7 +35,8 @@ public class PanZoom : MonoBehaviour
         float xExt = (scl.x) * moveAroundGO.GetComponent<RectTransform>().rect.width/2 - container.GetComponent<RectTransform>().rect.width/2,
         yExt =  (scl.y) * moveAroundGO.GetComponent<RectTransform>().rect.height/2 - container.GetComponent<RectTransform>().rect.height/2;
         extents = new Vector2(xExt, yExt);
-        print("extents: " + extents);
+        extentsOffset = new Vector2((float)(moveAroundGO.GetComponent<RectTransform>().pivot.x - 0.5) * xExt * 2, 0);
+
         return extents;
     }
 
@@ -53,7 +54,7 @@ public class PanZoom : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().localPosition;
+                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().anchoredPosition;
                 touchStart = Input.mousePosition;
             }
 
@@ -61,32 +62,34 @@ public class PanZoom : MonoBehaviour
             {
                 Vector3 direction = touchStart - Input.mousePosition;
                 Vector3 dest = moveGOstartPos - direction;
-                if (dest.x >= moveGOStartCenter.x - extents.x &&
-                    dest.x <= moveGOStartCenter.x + extents.x &&
+                //print("dest" + dest + " max x "+ (moveGOStartCenter.x + extents.x + extentsOffset.x));
+
+                if (dest.x >= moveGOStartCenter.x - extents.x + extentsOffset.x &&
+                    dest.x <= moveGOStartCenter.x + extents.x + extentsOffset.x &&
                     dest.y >= moveGOStartCenter.y - extents.y &&
                     dest.y <= moveGOStartCenter.y + extents.y)
                 {
                     //print("proper panning" + dest);
-                    moveAroundGO.GetComponent<RectTransform>().localPosition = dest;
+                    moveAroundGO.GetComponent<RectTransform>().anchoredPosition = dest;
                 }
-                else if (dest.x >= moveGOStartCenter.x - extents.x && dest.x <= moveGOStartCenter.x + extents.x)
+                else if (dest.x >= moveGOStartCenter.x - extents.x + extentsOffset.x && dest.x <= moveGOStartCenter.x + extents.x + extentsOffset.x)
                 {
                     //print("only moving x" + dest);
-                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
-                    moveAroundGO.GetComponent<RectTransform>().localPosition = new Vector3(dest.x, curr.y, curr.z);
+                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().anchoredPosition;
+                    moveAroundGO.GetComponent<RectTransform>().anchoredPosition = new Vector3(dest.x, curr.y, curr.z);
                 }
                 else if (dest.y >= moveGOStartCenter.y - extents.y && dest.y <= moveGOStartCenter.y + extents.y)
                 {
                     //print("only moving y" + dest);
-                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
-                    moveAroundGO.GetComponent<RectTransform>().localPosition = new Vector3(curr.x, dest.y, curr.z);
+                    Vector3 curr = moveAroundGO.GetComponent<RectTransform>().anchoredPosition;
+                    moveAroundGO.GetComponent<RectTransform>().anchoredPosition = new Vector3(curr.x, dest.y, curr.z);
                 }
 
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().localPosition;
+                moveGOstartPos = moveAroundGO.GetComponent<RectTransform>().anchoredPosition;
             }
         }
 
@@ -116,7 +119,7 @@ public class PanZoom : MonoBehaviour
 
     public void setMoveAroundGO(GameObject go)
     {
-        moveGOStartCenter = go.GetComponent<RectTransform>().localPosition;
+        //moveGOStartCenter = go.GetComponent<RectTransform>().localPosition;
         moveAroundGO = go;
         recalcExtents();
     }
@@ -133,15 +136,16 @@ public class PanZoom : MonoBehaviour
         if (increment != 0)
         {
             //after scaling, we could be out of boundary, need to check and nudge back
-            Vector3 curr = moveAroundGO.GetComponent<RectTransform>().localPosition;
+            Vector3 curr = moveAroundGO.GetComponent<RectTransform>().anchoredPosition;
+            print(curr);
 
-            if (curr.x < moveGOStartCenter.x - extents.x) curr.x = moveGOStartCenter.x - extents.x;
+            if (curr.x < moveGOStartCenter.x - extents.x + extentsOffset.x) curr.x = moveGOStartCenter.x - extents.x + extentsOffset.x;
             else if (curr.x > moveGOStartCenter.x + extents.x) curr.x = moveGOStartCenter.x + extents.x;
 
             if (curr.y < moveGOStartCenter.y - extents.y) curr.y = moveGOStartCenter.y - extents.y;
             else if (curr.y > moveGOStartCenter.y + extents.y) curr.y = moveGOStartCenter.y + extents.y;
 
-            moveAroundGO.GetComponent<RectTransform>().localPosition = curr;
+            moveAroundGO.GetComponent<RectTransform>().anchoredPosition = curr;
         }
 
         /*

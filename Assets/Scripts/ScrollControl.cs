@@ -24,7 +24,23 @@ public class ScrollControl : MonoBehaviour
 
     void Start()
     {
+        InitializeContentSize();
         LerpToIndex(0);
+    }
+
+    void InitializeContentSize()
+    {
+        panZoom.setMoveAroundGO(panZoom.moveAroundGO); //initialize center record
+
+        panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta = 
+            new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width+10), rectTransforms[0].rect.height);
+
+
+        for (int r=0; r<rectTransforms.Length; r++)
+        {
+            rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width + 10), 0);
+
+        }
     }
 
     void Update()
@@ -45,6 +61,7 @@ public class ScrollControl : MonoBehaviour
         currViewArt = i;
         //LerpTo(scrollRect, rectTransforms[i]);
         //panZoom.setMoveAroundGO(rectTransforms[i].gameObject); 
+        LerpTo(scrollRect, i);
     }
 
     //use when moveAroundGO is the RectTransform children
