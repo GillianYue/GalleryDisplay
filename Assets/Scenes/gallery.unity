@@ -261,8 +261,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
-  orthographic size: 5
+  orthographic: 0
+  orthographic size: 4.86
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -597,7 +597,7 @@ Canvas:
   m_GameObject: {fileID: 552720634}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 2
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 10
   m_PixelPerfect: 0
@@ -617,8 +617,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552720634}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 8.68}
+  m_LocalScale: {x: 0.0059952037, y: 0.0059952037, z: 0.0059952037}
   m_Children:
   - {fileID: 800692683}
   m_Father: {fileID: 0}
@@ -627,8 +627,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_SizeDelta: {x: 2388.0002, y: 1668}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &800692682
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,8 +780,12 @@ MonoBehaviour:
   checkForZoom: 1
   container: {fileID: 800692683}
   mainCanvas: {fileID: 552720637}
-  planeDistMin: 2
-  planeDistMax: 10
+  zMin: 2.8
+  zMax: 8.62
+  extentsXMin: {x: 0, y: -7194}
+  extentsXMax: {x: 797, y: -7997}
+  extentsYMin: {x: 0, y: 0}
+  extentsYMax: {x: -557, y: 557}
 --- !u!114 &800692690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1205,7 +1209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -14, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 9590, y: 1668}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1831411761
