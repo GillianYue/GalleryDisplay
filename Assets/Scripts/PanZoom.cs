@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PanZoom : MonoBehaviour
 {
     Vector3 touchStart;
@@ -13,6 +14,7 @@ public class PanZoom : MonoBehaviour
     Vector2 extentsX, extentsY = new Vector2(9999, 9999); //extents to which the moveAroundGO can move, details see notes in Map
 
     public bool checkForPan, checkForZoom;
+    public float zMin, zMax;
 
     bool lerpMoving; //whether is in motion of zooming to target scale, will ignore input when true
     Vector3 panDest;
@@ -20,7 +22,7 @@ public class PanZoom : MonoBehaviour
 
     public RectTransform container;
     public Canvas mainCanvas; //plane distance will be set to toggle distance to sound sources
-    public float zMin, zMax;
+
     public Vector2 extentsXMin, extentsXMax, //extentsXMin.x is left bound, .y is right bound; same for max
         extentsYMin, extentsYMax;  //.x is for top bound, .y is for bottom
 
