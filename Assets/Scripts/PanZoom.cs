@@ -60,7 +60,7 @@ public class PanZoom : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 Vector3 direction = touchStart - Input.mousePosition;
-                Vector3 dest = moveGOstartPos - direction;
+                Vector3 dest = moveGOstartPos - direction * 1.5f;
                 //print("dest" + dest + " max x "+ (moveGOStartCenter.x + extents.x + extentsOffset.x));
 
                 if (dest.x >= Mathf.Min(extentsX.x, extentsX.y) &&
@@ -122,6 +122,17 @@ public class PanZoom : MonoBehaviour
         //moveGOStartCenter = go.GetComponent<RectTransform>().localPosition;
         moveAroundGO = go;
         recalcExtents();
+    }
+
+    public void setZ(float targetZ)
+    {
+        Vector3 newPos = moveAroundGO.transform.position;
+        if (targetZ < zMax && targetZ > zMin)
+        {
+            newPos.z = targetZ;
+        }
+
+        moveAroundGO.transform.position = newPos;
     }
 
     void zoom(float increment, Vector2 center)
