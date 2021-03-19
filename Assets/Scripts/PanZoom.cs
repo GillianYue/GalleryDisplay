@@ -26,6 +26,8 @@ public class PanZoom : MonoBehaviour
     public Vector2 extentsXMin, extentsXMax, //extentsXMin.x is left bound, .y is right bound; same for max
         extentsYMin, extentsYMax;  //.x is for top bound, .y is for bottom
 
+    public float panSpeed, zoomSpeed;
+
 
     void Start()
     {
@@ -60,7 +62,8 @@ public class PanZoom : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 Vector3 direction = touchStart - Input.mousePosition;
-                Vector3 dest = moveGOstartPos - direction * 1.5f;
+                Vector3 dest = moveGOstartPos - direction * panSpeed;
+                print("pan speed: " + panSpeed + " dir: " + direction);
                 //print("dest" + dest + " max x "+ (moveGOStartCenter.x + extents.x + extentsOffset.x));
 
                 if (dest.x >= Mathf.Min(extentsX.x, extentsX.y) &&
@@ -147,10 +150,10 @@ public class PanZoom : MonoBehaviour
             Vector2 mouseScreenPos = center;
             Ray mouseWorldRay = Camera.main.ScreenPointToRay(mouseScreenPos);
 
-            Vector3 newPos = mouseWorldRay.origin + (mouseWorldRay.direction * increment * 100);
+            Vector3 newPos = mouseWorldRay.origin + (mouseWorldRay.direction * increment * 10 * Mathf.Pow(10, zoomSpeed));
 
             Vector3 newSetPos = Vector3.MoveTowards(Camera.main.transform.position,
-                newPos, increment * 500f * Time.deltaTime);
+                newPos, increment * 50f * Mathf.Pow(10, zoomSpeed) * Time.deltaTime);
             Vector3 deltaPos = Camera.main.transform.position - newSetPos;
 
             Vector3 finalDest = moveAroundGO.transform.position + deltaPos * (increment > 0 ? 1 : -1);

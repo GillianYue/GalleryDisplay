@@ -1529,6 +1529,8 @@ MonoBehaviour:
   extentsXMax: {x: 797, y: -7997}
   extentsYMin: {x: 0, y: 0}
   extentsYMax: {x: -557, y: 557}
+  panSpeed: 0
+  zoomSpeed: 0
 --- !u!114 &800692690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2668,7 +2670,18 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1680267467}
+        m_MethodName: onChangeSliderValue
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1679533744
 GameObject:
   m_ObjectHideFlags: 0
@@ -3428,7 +3441,18 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1680267467}
+        m_MethodName: onChangeSliderValue
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1984484110
 GameObject:
   m_ObjectHideFlags: 0
