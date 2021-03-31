@@ -33,13 +33,14 @@ public class ScrollControl : MonoBehaviour
         panZoom.setMoveAroundGO(panZoom.moveAroundGO); //initialize center record
 
         panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta = 
-            new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width+10), rectTransforms[0].rect.height);
+            new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width-5), rectTransforms[0].rect.height);
 
 
         for (int r=0; r<rectTransforms.Length; r++)
         {
-            rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width + 10), 0);
-
+            rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width-5), 0);
+            rectTransforms[r].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);
+            //rectTransforms[r].transform.localPosition = new Vector2(r * (rectTransforms[0].rect.width), 0);
         }
     }
 
