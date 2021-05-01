@@ -17,6 +17,8 @@ public class ScrollControl : MonoBehaviour
     public int currViewArt;
     public PanZoom panZoom;
 
+    public bool usingOneImage;
+
     private void Awake()
     {
         //SwipeDetector.OnSwipe += SwipeDetector_OnSwipe;
@@ -32,15 +34,25 @@ public class ScrollControl : MonoBehaviour
     {
         panZoom.setMoveAroundGO(panZoom.moveAroundGO); //initialize center record
 
-        panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta = 
-            new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width-5), rectTransforms[0].rect.height);
-
-
-        for (int r=0; r<rectTransforms.Length; r++)
+        if (!usingOneImage)
         {
-            rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width-5), 0);
-            rectTransforms[r].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);
-            //rectTransforms[r].transform.localPosition = new Vector2(r * (rectTransforms[0].rect.width), 0);
+            panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta =
+                new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width - 5), rectTransforms[0].rect.height);
+
+            for (int r = 0; r < rectTransforms.Length; r++)
+            {
+                rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width - 5), 0);
+                rectTransforms[r].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);
+                //rectTransforms[r].transform.localPosition = new Vector2(r * (rectTransforms[0].rect.width), 0);
+            }
+        }
+        else
+        {
+            panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta =
+            new Vector2((rectTransforms[0].rect.width - 5), rectTransforms[0].rect.height); //just the first image dimensions
+
+            rectTransforms[0].offsetMin = new Vector2(0, 0);
+            rectTransforms[0].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);
         }
     }
 
