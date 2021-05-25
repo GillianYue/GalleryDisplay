@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,11 +37,11 @@ public class ScrollControl : MonoBehaviour
         if (!usingOneImage)
         {
             panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta =
-                new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width - 5), rectTransforms[0].rect.height);
+                new Vector2(rectTransforms.Length * (rectTransforms[0].rect.width), rectTransforms[0].rect.height);
 
             for (int r = 0; r < rectTransforms.Length; r++)
             {
-                rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width - 5), 0);
+                rectTransforms[r].offsetMin = new Vector2(r * (rectTransforms[0].rect.width), 0);
                 rectTransforms[r].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);
                 //rectTransforms[r].transform.localPosition = new Vector2(r * (rectTransforms[0].rect.width), 0);
             }
@@ -49,7 +49,7 @@ public class ScrollControl : MonoBehaviour
         else
         {
             panZoom.moveAroundGO.GetComponent<RectTransform>().sizeDelta =
-            new Vector2((rectTransforms[0].rect.width - 5), rectTransforms[0].rect.height); //just the first image dimensions
+            new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height); //just the first image dimensions
 
             rectTransforms[0].offsetMin = new Vector2(0, 0);
             rectTransforms[0].sizeDelta = new Vector2((rectTransforms[0].rect.width), rectTransforms[0].rect.height);

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,7 +43,7 @@ public class PanZoom : MonoBehaviour
 
     void Update()
     {
-        if (lerpMoving)
+        if (false) //if lerpMoving
         {
             moveAroundGO.GetComponent<RectTransform>().localPosition = moveAroundGO.GetComponent<RectTransform>().localPosition + 0.001f * panDest;
             float scl = moveAroundGO.GetComponent<RectTransform>().localScale.x, newScl = scl + zoomDest * 0.001f;
@@ -63,7 +63,7 @@ public class PanZoom : MonoBehaviour
             {
                 Vector3 direction = touchStart - Input.mousePosition;
                 Vector3 dest = moveGOstartPos - direction * panSpeed;
-                print("pan speed: " + panSpeed + " dir: " + direction);
+               // print("pan speed: " + panSpeed + " dir: " + direction);
                 //print("dest" + dest + " max x "+ (moveGOStartCenter.x + extents.x + extentsOffset.x));
 
                 if (dest.x >= Mathf.Min(extentsX.x, extentsX.y) &&
